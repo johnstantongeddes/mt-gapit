@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,mem=16gb,walltime=04:00:00
+#PBS -m abe
+
+module load R
+
+cd /home/youngn/stanton0/mt-gapit/R
+
+Rscript mt-gapit-allchromosomes.R /home/youngn/stanton0/mt-gapit/data/GH2_trichomes_GAPIT.txt /home/youngn/shared/mt35/GWA226/ /home/youngn/stanton0/mt-gapit/tests/testall
+
+
+
