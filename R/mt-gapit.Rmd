@@ -1,0 +1,67 @@
+Medicago HapMap - Saponin Genome-wide Association Analysis
+==========================================================
+
+- **Authors**: John Stanton-Geddes, Derek Nedveck
+- **Date**: 2013.02.28
+- **Description**: Analysis of saponin metabolite phenotype data collected in Lloyd Sumners lab at the Noble Institute for ~104 Medicago HapMap accessions. Script developed from the tutorials for the [GAPIT analysis tool](http://www.maizegenetics.net/gapit)
+
+> # GAPIT - Genomic Association and Prediction Integrated Tool
+> # Designed by Zhiwu Zhang
+> # Written by Zhiwu Zhang, Alex Lipka and Feng Tian 
+> # Last update: June 29, 2012
+
+```{r GAPITsetup, echo=FALSE}
+# Load libraries
+library('MASS')
+library(gplots)
+library("LDheatmap")
+library("genetics")
+# multtest available from Bioconductor RUN FIRST TIME ONLY
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("multtest")
+library(multtest)
+
+# Load GAPIT source code from personal fork
+source('/home/youngn/stanton0/GAPIT/gapit_functions.txt')
+# Load EMMA code, modified by GAPIT programmers (see User Manual)
+source("http://www.maizegenetics.net/images/stories/bioinformatics/GAPIT/emma.txt")
+```
+
+#
+# TODO - modify code so that results written to file using 'cat' instead of saving in R environment when using memory saving feature of reading 'file.fragment'
+#
+
+Read in command-line arguments and specify directories
+
+```{r arg}
+if(is.null(trait)) stop("No trait file!")
+if(is.null(geno)) stop("No genotype file!")
+if(is.null(out)) stop("No out directory!")
+```
+
+#```{r kinship, cache=TRUE}
+#TODO
+#```
+
+Load data
+
+```{r loaddata}
+traitdata <- read.table(trait, header=T)
+head(traitdata)
+genodata <- read.csv(geno, sep="\t", header=F, nrows=1000)
+genodata[1:5,10:20]
+dim(genodata)
+```
+
+Run GAPIT
+
+```{r gapit}
+setwd(out) # save results to out directory
+
+system.time(gapitout <- GAPIT(
+Y=traitdata,
+G=genodata,
+SNP.MAF=0.02,
+file.output=FALSE
+))
+```
