@@ -1,0 +1,28 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1,mem=16gb,walltime=30:00:00
+#PBS -m abe
+
+module load R
+
+# Set folders
+resultsdir="/home/youngn/stanton0/mt-gapit/results/"
+genodir="/home/youngn/shared/mt35/GWA226/"
+traitfile="/home/youngn/stanton0/mt-gapit/data/GH2_trichomes_GAPIT.txt"
+
+## Run GAPIT sequentially for each chromosome
+for chr in 1 2 3 4 5 6 7 8 T U
+  do 
+    rdir=$resultsdir"/GH2_trichomes_chr"$chr
+    genfile=$genodir"/chr"$chr"_plink_filtered.hmp.txt"
+
+    # make directory for results and change to working directory
+    mkdir $rdir
+    cd $rdir
+
+    # run GAPIT
+    Rscript /home/youngn/stanton0/mt-gapit/R/mt-gapit.R $genfile $traitfile
+
+  done
+
+
+

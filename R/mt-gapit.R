@@ -1,7 +1,12 @@
 ### Script for genome-wide association analysis of Medicago saponin data ###
 ###--------------------------------------------------------------------
 
-# Load libraries
+# This analyzes one chromosome at a time, and dumps the output to working directory. It expects the following variables to be fed to it in this order:
+# 	genfile = the file where the SNPs are
+#	traitfile = the trait file to be analyzed
+
+
+# Load required libraries
 library('MASS')
 library(gplots)
 library("LDheatmap")
@@ -17,30 +22,28 @@ source('/home/youngn/stanton0/GAPIT/gapit_functions_JSG.txt')
 source("http://www.maizegenetics.net/images/stories/bioinformatics/GAPIT/emma.txt")
 
 
-## Load command-line arguments
-args <- commandArgs(trailingOnly = TRUE)
-trait <- args[1]
-geno <- args[2]
-out <- args[3]
+## Load command-line arguments with directories and trait file
+curdir <- getwd()
+args <- commandArgs(TRUE)
+genofile <- args[1]
+traitfile <- args[2]
 
 
 ## Load data
-traitdata <- read.table(trait, header=T)
-head(traitdata)
-genodata <- read.csv(geno, sep="\t", header=F, nrows=1000)
-genodata[1:5,10:20]
+traitdata <- read.table(traitfile, header=T)
+genodata <- read.csv(genofile, sep="\t", header=FALSE)
 dim(genodata)
 
 
 ## Run GAPIT
-setwd(out) # save results to out directory
+sink("gapit_log.txt", split = FALSE) # saving log of terminal output
 
-system.time(gapitout <- GAPIT(
+gapitout <- GAPIT(
   Y=traitdata,
   G=genodata,
   SNP.MAF=0.02,
   file.output=TRUE,
   GWAS.plot.output=FALSE                          
-))
+)
 
 
